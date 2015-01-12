@@ -1195,7 +1195,7 @@ var WikiGame = function()
 
 			case "mousemove":
 			{
-				broadcast = false;
+				broadcast = true;
 				game_controller.set_mouse(_event.clientX,_event.clientY);
 				break;
 			}
