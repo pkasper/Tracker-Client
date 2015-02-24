@@ -576,10 +576,14 @@ var WikiGame = function()
             input_tooltip.classList.add('dialog_tooltip');
             input_tooltip.classList.add('dialog_tooltip_range');
             input_tooltip.appendChild(document.createTextNode("😕"));
+            input_tooltip.appendChild(document.createElement('br'));
+            input_tooltip.appendChild(document.createTextNode("(bad)"));
 
             var input_tooltip_right = document.createElement('span');
             input_tooltip_right.style = "float: right";
             input_tooltip_right.appendChild(document.createTextNode("😀"));
+            input_tooltip.appendChild(document.createElement('br'));
+            input_tooltip.appendChild(document.createTextNode("(good)"));
             input_tooltip.appendChild(input_tooltip_right);
             input_frame.appendChild(input_tooltip);
             var input_field = document.createElement('input');
