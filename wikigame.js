@@ -62,6 +62,7 @@ var WikiGame = function()
 		var timers = {start_time:0,paused_time:0,pause_start_time:0};
 		var mouse = {position:{x:0,y:0},buttons_pressed:{left:false,middle:false,right:false}};
         var viewport = {size:{x:0,y:0}, scroll:{x:0,y:0}, scrollsize:{x:0, y:0}};
+        var keys = [];
 
         this.reset = function()
         {
@@ -190,6 +191,29 @@ var WikiGame = function()
 //			console.log(JSON.stringify(mouse.buttons_pressed));
 		};
 
+        this.set_key = function(_key, _pressed)
+        {
+            if (_pressed)
+            {
+                if (keys.indexOf(_key) != -1)
+                {
+                    return;
+                }
+
+                keys.push(_key);
+            }
+            else
+            {
+                var key_index = keys.indexOf(_key);
+                if (key_index == -1)
+                {
+                    return;
+                }
+
+                keys.splice(key_index,1);
+            }
+        };
+
 		this.get_status = function()
 		{
 			return status;
@@ -210,7 +234,7 @@ var WikiGame = function()
 
             var abort_text = document.createElement('div');
             abort_text.classList.add('abort_text');
-            abort_text.appendChild(document.createTextNode("Abort Mission"));
+            abort_text.appendChild(document.createTextNode("Abort Task"));
             abort_text.addEventListener('click', function(){game_controller.abort_game(false);}, false);
             abort_frame.appendChild(abort_text);
 
@@ -237,6 +261,7 @@ var WikiGame = function()
 			features.game_status = game_status;
 			features.mouse = mouse;
             features.viewport = viewport;
+            features.keys = keys;
 
 			return features;
 		};
@@ -436,6 +461,18 @@ var WikiGame = function()
 			return false;
 		};
 
+
+        this.lock_frame = function()
+        {
+            wikiframe.classList.add('locked')
+        };
+
+        this.unlock_frame = function()
+        {
+            wikiframe.classList.remove('locked')
+        };
+
+
 //		handle_menu = find_rule("wikiframe","div.menu");
 		css_controller = this;
 	};
@@ -447,19 +484,21 @@ var WikiGame = function()
 			wikiframe.addEventListener('load', this, false);
 			window.addEventListener("resize", this, false);
             wikiframe.addEventListener('scroll', this, false);
+            wikiframe.contentWindow.addEventListener('readystatechange', this, false);
 		};
 
 		this.attach_events = function()
 		{
-			wikiframe.contentWindow.document.addEventListener('click',wikigame,false);
-			wikiframe.contentWindow.document.addEventListener('mousemove',wikigame,false);
-			wikiframe.contentWindow.document.addEventListener('mousedown',wikigame,false);
-			wikiframe.contentWindow.document.addEventListener('mouseup',wikigame,false);
-			wikiframe.contentWindow.document.addEventListener('mousemove',wikigame,false);
-			wikiframe.contentWindow.document.addEventListener('dblclick',wikigame,false);
+			wikiframe.contentWindow.document.addEventListener('click', wikigame, false);
+			wikiframe.contentWindow.document.addEventListener('mousemove', wikigame, false);
+			wikiframe.contentWindow.document.addEventListener('mousedown', wikigame, false);
+			wikiframe.contentWindow.document.addEventListener('mouseup', wikigame, false);
+			wikiframe.contentWindow.document.addEventListener('mousemove', wikigame, false);
+			wikiframe.contentWindow.document.addEventListener('dblclick', wikigame, false);
 			wikiframe.contentWindow.document.addEventListener("scroll", wikigame, false);
-			wikiframe.contentWindow.document.addEventListener("keypress", wikigame, false);
-
+            wikiframe.contentWindow.document.addEventListener("keypress", wikigame, false);
+            wikiframe.contentWindow.document.addEventListener("keyup", wikigame, false);
+            wikiframe.contentWindow.document.addEventListener("keydown", wikigame, false);
 
 			wikiframe.contentWindow.addEventListener("beforeunload", wikigame, false);
 		};
@@ -869,7 +908,7 @@ var WikiGame = function()
                 }
                 case "hint":
                 {
-                    console.log("HINT PACKAGE: " + JSON.stringify((message_package.message)));
+//                    console.log("HINT PACKAGE: " + JSON.stringify((message_package.message)));
                     hint_controller.display_hint(message_package.message.type, message_package.message.text,message_package.message.url);
                     break;
                 }
@@ -1151,6 +1190,13 @@ var WikiGame = function()
 
 		switch(_event.type)
 		{
+            case "readystatechange":
+            {
+                alert("WHEEE");
+                console.log("DOMContentLoaded");
+                break;
+            }
+
 			case "load":
 			{
 				broadcast = true;
@@ -1160,6 +1206,7 @@ var WikiGame = function()
                 hint_controller.clear_hints();
 				game_controller.set_current_page(wikiframe.contentWindow.location.href);
 				game_controller.set_title(wikiframe.contentWindow.document.title);
+                css_controller.unlock_frame();
 				break;
 			}
 
@@ -1215,6 +1262,22 @@ var WikiGame = function()
             case "beforeunload":
             {
                 //screenshot(_event.clientX,_event.clientY);
+                css_controller.lock_frame();
+                break;
+            }
+
+            case "keydown":
+            {
+                broadcast = true;
+                game_controller.set_key(_event.which, true);
+                break;
+            }
+
+            case "keyup":
+            {
+                broadcast = true;
+                game_controller.set_key(_event.which, false);
+                break;
             }
 		}
 

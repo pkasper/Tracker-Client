@@ -23,6 +23,11 @@ iframe.wikiframe
 	
 	background-color:#FFFFFF;
 }
+
+.locked
+{
+    pointer_events: none;
+}
 /*					  BUTTSTRAP 					*/
 div.buttstrap
 {
