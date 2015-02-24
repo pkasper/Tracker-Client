@@ -1,0 +1,1 @@
+place both files into the css folder of WIKIPEDIA FOR SCHOOLS 2013

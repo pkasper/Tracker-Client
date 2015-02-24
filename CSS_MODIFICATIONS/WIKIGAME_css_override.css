@@ -1,0 +1,42 @@
+
+
+div.menu 
+{
+  /*echo("display:none;");*/
+}
+
+div.download,div.download,a#badge,div.sosbox,div#sosebar
+{
+	display:none;
+}
+
+div#logo
+{
+    echo("pointer-events:none;");
+}
+
+a[title^="Portal:"]
+{
+    display: none;
+}
+
+a.image
+{
+    pointer-events: none;
+}
+
+map
+{
+    pointer-events: none;
+}
+
+area
+{
+    pointer-events: none;
+    display: none;
+}
+
+img
+{
+    pointer-events:none;
+}
