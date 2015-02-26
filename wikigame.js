@@ -1,5 +1,5 @@
 // JavaScript Document
-//localStorage.clear();
+localStorage.clear();  //decomment for debugging purposes
 var WikiGame = function()
 {
 	var settings = {spam_interval:10};
@@ -14,6 +14,7 @@ var WikiGame = function()
 	var event_controller;
 	var css_controller;
 	var game_controller;
+    var tutorial_controller;
     var analyzer;
     var user;
 	var buttstrap;
@@ -677,7 +678,7 @@ var WikiGame = function()
 
             var text_content = document.createElement('div');
             text_content.classList.add('dialog_text');
-            text_content.appendChild(document.createTextNode(_text));
+            text_content.innerHTML = _text;
             input_frame.appendChild(text_content);
             dialog_frame.appendChild(input_frame);
 
@@ -712,7 +713,7 @@ var WikiGame = function()
 
             var text_content = document.createElement('div');
             text_content.classList.add('dialog_text');
-            text_content.appendChild(document.createTextNode(_text));
+            text_content.innerHTML = _text;
             input_frame.appendChild(text_content);
             dialog_frame.appendChild(input_frame);
 
@@ -792,6 +793,133 @@ var WikiGame = function()
         };
 
         hint_controller = this;
+    };
+
+    var Tutorial_Controller = function()
+    {
+        var tutorial_frames = [];
+
+        var get_frame_index = function(_name)
+        {
+            for(var i = 0; i<tutorial_frames.length; ++i)
+            {
+                if(tutorial_frames[i].name == _name)
+                {
+                    return i;
+                }
+            }
+            return -1;
+        };
+
+        this.show_tutorial_frame = function(_tutorial_package)
+        {
+            if(_tutorial_package == "CLEAR_ALL")
+            {
+                tutorial_controller.clear_tutorial();
+                return;
+            }
+            var name = _tutorial_package.name;
+            var frame_type = _tutorial_package.type;
+            var position = _tutorial_package.position;
+            var arrow_position = _tutorial_package.arrow_position;
+            var title = _tutorial_package.title;
+            var text = _tutorial_package.text;
+
+            if(get_frame_index(name) != -1)
+            {
+                return;
+            }
+            var tutorial_frame = helper.create_object('div', ['tutorial_frame', frame_type, "tutorial_frame_arrow"]);
+            var tutorial_title = helper.create_object('div', ['tutorial_title']);
+            tutorial_title.innerHTML = title;
+            tutorial_frame.appendChild(tutorial_title);
+            var tutorial_text = helper.create_object('div', ['tutorial_text']);
+            tutorial_text.innerHTML = text;
+            tutorial_frame.appendChild(tutorial_text);
+
+            switch(position.x.alignment)
+            {
+                case "left":
+                {
+                    tutorial_frame.style.left = position.x.offset;
+                    break;
+                }
+                case "center":
+                {
+                    tutorial_frame.style.left = "50%";
+                    tutorial_frame.style.transform = "translateX(-50%)";
+                    break;
+                }
+                case "right":
+                {
+                    tutorial_frame.style.right = position.x.offset;
+                    break;
+                }
+            }
+
+            switch(position.y.alignment)
+            {
+                case "top":
+                {
+                    tutorial_frame.style.top = position.y.offset;
+                    break;
+                }
+                case "center":
+                {
+                    tutorial_frame.style.top = "50%";
+                    if(position.x.alignment == "center")
+                    {
+                        tutorial_frame.style.transform = "translate(-50%, -50%)";
+                    }
+                    else
+                    {
+                        tutorial_frame.style.transform = "translateY(-50%)";
+                    }
+                    break;
+                }
+                case "bottom":
+                {
+                    tutorial_frame.style.bottom = position.y.offset;
+                    break;
+                }
+            }
+
+            tutorial_frame.classList.add("tutorial_arrow_position_" + arrow_position);
+
+            var tutorial_closer = helper.create_object('div', ['tutorial_closer', 'close']);
+            tutorial_closer.appendChild(document.createTextNode("x"));
+            tutorial_closer.addEventListener('click', function(){tutorial_controller.close_tutorial_frame(name)}, false);
+            tutorial_frame.appendChild(tutorial_closer);
+
+
+            document.body.appendChild(tutorial_frame);
+            tutorial_frames.push({name: name, frame: tutorial_frame});
+        };
+
+        this.close_tutorial_frame = function(_name)
+        {
+            var frame_index = get_frame_index(_name);
+            if(frame_index == -1)
+            {
+                return
+            }
+
+            document.body.removeChild(tutorial_frames[frame_index].frame);
+            tutorial_frames.splice(frame_index, 1);
+
+            server_connector.send_message("tutorial_close", _name);
+        };
+
+        this.clear_tutorial = function()
+        {
+            for(var i=0; i<tutorial_frames.length; ++i)
+            {
+                document.body.removeChild(tutorial_frames[i].frame);
+            }
+            tutorial_frames = [];
+        };
+
+        tutorial_controller = this;
     };
 
 	var Notification_Controller = function()
@@ -924,6 +1052,11 @@ var WikiGame = function()
                 case "current_distance":
                 {
                     buttstrap.highlight_distance(message_package.message);
+                    break;
+                }
+                case "tutorial":
+                {
+                    tutorial_controller.show_tutorial_frame(message_package.message);
                     break;
                 }
 
@@ -1175,18 +1308,29 @@ var WikiGame = function()
         Hint_Controller();
         Dialog_Controller();
 		Message_Handler();
+        Tutorial_Controller();
 
 		Server_Connector("ws://127.0.0.1:8888/wikigame");
 //        Server_Connector("ws://129.27.12.44:8888/wikigame");
 		Event_Controller();
 
-        dialog_controller.text_dialog("Welcome", 'Can you navigate the network?', game_controller.start);
+        dialog_controller.text_dialog("Welcome", '[WELCOME] <br /> [INTRODUCTION TEXT] <br /> [DATA SECURITY STATEMENT]', game_controller.start);
 		//temporary start
 
         //temporary hint
         //setTimeout(function(){hint_controller.display_hint('hint', 'INSTANT SOLUTION', 'wiki-schools/wp/e/Eastern_Europe.htm')}, 5000);
-
-	};
+/*
+        tutorial_controller.show_tutorial_frame({name: 'topleft', type: 'tutorial', position: {x: {alignment: "left", offset: "1rem"}, y: {alignment: "top", offset: "1rem"}}, arrow_position:"bottomright", title:"topleft", text:"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."});
+        tutorial_controller.show_tutorial_frame('topcenter', 'emphasis', {x: {alignment: "center", offset: "1rem"}, y: {alignment: "top", offset: "1rem"}}, "bottomcenter",  "topcenter", "<br><br><br>PLACEHOLDER");
+        tutorial_controller.show_tutorial_frame('topright', 'default', {x: {alignment: "right", offset: "1rem"}, y: {alignment: "top", offset: "1rem"}}, "bottomleft",  "topright", "<br><br><br>PLACEHOLDER");
+        tutorial_controller.show_tutorial_frame('left', 'tutorial', {x: {alignment: "left", offset: "1rem"}, y: {alignment: "center", offset: "1rem"}}, "rightcenter", "left", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
+        tutorial_controller.show_tutorial_frame('center', 'emphasis', {x: {alignment: "center", offset: "1rem"}, y: {alignment: "center", offset: "1rem"}}, "",  "center", "<br><br><br>PLACEHOLDER");
+        tutorial_controller.show_tutorial_frame('right', 'default', {x: {alignment: "right", offset: "1rem"}, y: {alignment: "center", offset: "1rem"}}, "leftcenter",  "right", "<br><br><br>PLACEHOLDER");
+        tutorial_controller.show_tutorial_frame('bottomleft', 'tutorial', {x: {alignment: "left", offset: "1rem"}, y: {alignment: "bottom", offset: "1rem"}}, "topright", "bottomleft", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
+        tutorial_controller.show_tutorial_frame('bottomcenter', 'emphasis', {x: {alignment: "center", offset: "1rem"}, y: {alignment: "bottom", offset: "1rem"}}, "topcenter",  "bottomcenter", "<br><br><br>PLACEHOLDER");
+        tutorial_controller.show_tutorial_frame('bottomright', 'error', {x: {alignment: "right", offset: "1rem"}, y: {alignment: "bottom", offset: "1rem"}}, "topleft",  "bottomright", "<br><br><br>PLACEHOLDER");
+*/
+    };
 
 	this.handleEvent = function(_event)
 	{
@@ -1194,13 +1338,6 @@ var WikiGame = function()
 
 		switch(_event.type)
 		{
-            case "readystatechange":
-            {
-                alert("WHEEE");
-                console.log("DOMContentLoaded");
-                break;
-            }
-
 			case "load":
 			{
 				broadcast = true;

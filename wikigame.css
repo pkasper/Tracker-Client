@@ -391,6 +391,143 @@ div.notification
 	box-shadow: 0 0 4px #212121;
 }
 
+/*					TUTORIAL					*/
+div.tutorial_frame
+{
+    position:fixed;
+    z-index:999;
+    padding: 0.3rem;
+    border:1px #212121 solid;
+    font-family:Verdana, Geneva, sans-serif;
+    max-width: 20%;
+    box-shadow: 0 0 1rem 0.5rem rgba(33, 33, 33, 1);
+}
+
+div.tutorial_title
+{
+    position: relative;
+    font-weight: bold;
+    margin-right: 1rem;
+    font-size:14px;
+}
+div.tutorial_text
+{
+    position: relative;
+    font-size:12px;
+    background-color: rgba(200,200,200,0.7);
+    border: 1px #212121 solid;
+    padding: 0.3rem;
+    text-shadow:none;
+}
+
+div.tutorial_closer
+{
+    position: absolute;
+    right: 0.3rem;
+    top: 0.3rem;
+    border: 1px #212121 solid;
+    width: 0.8rem;
+    height: 0.8rem;
+    text-align: center;
+    line-height: 0.6rem;
+    cursor: pointer;
+}
+
+div.tutorial_frame_arrow:before
+{
+    border: 1rem solid transparent;
+    content: " ";
+    position: absolute;
+    pointer-events: none;
+}
+
+div.tutorial_arrow_position_topleft:before
+{
+    border-bottom-color: #CCCCCC;
+    bottom: 100%;
+    left: 1rem;
+}
+
+div.tutorial_arrow_position_topcenter:before
+{
+    border-bottom-color: #CCCCCC;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+div.tutorial_arrow_position_topright:before
+{
+    border-bottom-color: #CCCCCC;
+    bottom: 100%;
+    right: 1rem;
+}
+
+div.tutorial_arrow_position_righttop:before
+{
+    border-left-color: #CCCCCC;
+    top: 1rem;
+    left: 100%;
+}
+
+div.tutorial_arrow_position_rightcenter:before
+{
+    border-left-color: #CCCCCC;
+    top: 50%;
+    left: 100%;
+    transform: translateY(-50%);
+}
+
+div.tutorial_arrow_position_rightbottom:before
+{
+    border-left-color: #CCCCCC;
+    bottom: 1rem;
+    left: 100%;
+}
+
+div.tutorial_arrow_position_bottomright:before
+{
+    border-top-color: #CCCCCC;
+    top: 100%;
+    right: 1rem;
+}
+
+div.tutorial_arrow_position_bottomcenter:before
+{
+    border-top-color: #CCCCCC;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+div.tutorial_arrow_position_bottomleft:before
+{
+    border-top-color: #CCCCCC;
+    top: 100%;
+    left: 1rem;
+}
+
+div.tutorial_arrow_position_leftbottom:before
+{
+    border-right-color: #CCCCCC;
+    bottom: 1rem;
+    right: 100%;
+}
+
+div.tutorial_arrow_position_leftcenter:before
+{
+    border-right-color: #CCCCCC;
+    top: 50%;
+    right: 100%;
+    transform: translateY(-50%);
+}
+
+div.tutorial_arrow_position_lefttop:before
+{
+    border-right-color: #CCCCCC;
+    top: 1rem;
+    right: 100%;
+}
 
 .default
 {
@@ -425,6 +562,13 @@ div.notification
 	background: linear-gradient(180deg, rgba(200,128,128,0.95), rgba(128,64,64,0.95));
 	
 	text-shadow: 1px 1px 0 rgba(200,128,128,1), -1px -1px 0 rgba(200,128,128,1), -1px 1px 0 rgba(200,128,128,1), 1px -1px 0 rgba(200,128,128,1);
+}
+
+.tutorial
+{
+    background: linear-gradient(180deg, rgba(128,128,200,0.95), rgba(64,64,128,0.95));
+
+    text-shadow: 1px 1px 0 rgba(128,128,200,1), -1px -1px 0 rgba(128,128,200,1), -1px 1px 0 rgba(128,128,200,1), 1px -1px 0 rgba(128,128,200,1);
 }
 
 .hint
