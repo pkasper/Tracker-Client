@@ -1,8 +1,8 @@
 // JavaScript Document
-localStorage.clear();  //decomment for debugging purposes
+// localStorage.clear();  //decomment for debugging purposes
 var WikiGame = function()
 {
-	var settings = {spam_interval:10};
+	var settings = {spam_interval:0, default_page:'wiki-schools/', css_files:["PAT_wikigame/wikigame.css"], websocket_url:"ws://127.0.0.1:8888/wikigame"};
 
 	var wikigame = this;
 	var wikiframe;
@@ -544,6 +544,7 @@ var WikiGame = function()
             var input_field = document.createElement('input');
             input_field.classList.add("dialog_input");
             input_field.type = "number";
+            input_field.value = 0;
             input_frame.appendChild(input_field);
             return {frame:input_frame, field:input_field};
         };
@@ -557,12 +558,12 @@ var WikiGame = function()
 
             var option_true = document.createElement('option');
             option_true.appendChild(document.createTextNode('Yes'));
-            option_true.value = true;
+            option_true.value = 1;
             input_field.appendChild(option_true);
 
             var option_false = document.createElement('option');
             option_false.appendChild(document.createTextNode('No'));
-            option_false.value = false;
+            option_false.value = 0;
             input_field.appendChild(option_false);
 
             input_frame.appendChild(input_field);
@@ -581,10 +582,10 @@ var WikiGame = function()
             input_tooltip.appendChild(document.createTextNode("(bad)"));
 
             var input_tooltip_right = document.createElement('span');
-            input_tooltip_right.style = "float: right";
+            input_tooltip_right.style = "position:absolute; right: 0; top:0, text-align:right;";
             input_tooltip_right.appendChild(document.createTextNode("😀"));
-            input_tooltip.appendChild(document.createElement('br'));
-            input_tooltip.appendChild(document.createTextNode("(good)"));
+            input_tooltip_right.appendChild(document.createElement('br'));
+            input_tooltip_right.appendChild(document.createTextNode("(good)"));
             input_tooltip.appendChild(input_tooltip_right);
             input_frame.appendChild(input_tooltip);
             var input_field = document.createElement('input');
@@ -595,6 +596,48 @@ var WikiGame = function()
             input_field.value = (_from + _to) / 2;
             input_frame.appendChild(input_field);
             return {frame:input_frame, field:input_field};
+        };
+
+        var typecheck = function(_type, _value)
+        {
+            if(_value == "")
+            {
+                notification_controller.notify("error", "Please enter the required data");
+                return false;
+            }
+
+            switch(_type)
+            {
+                case "int":
+                {
+                    if(isNaN(_value))
+                    {
+                        notification_controller.notify("error", "Entered data is of invalid type");
+                        return false;
+                    }
+                    break;
+                }
+                case "range":
+                {
+                    if(isNaN(_value))
+                    {
+                        notification_controller.notify("error", "Entered data is of invalid type");
+                        return false;
+                    }
+                    break;
+                }
+                case "bool":
+                {
+                    if(isNaN(_value))
+                    {
+                        notification_controller.notify("error", "Entered data is of invalid type");
+                        return false;
+                    }
+                    break;
+                }
+            }
+
+            return true;
         };
 
         this.dialog = function(_text, _type, _payload, _callback)
@@ -648,16 +691,16 @@ var WikiGame = function()
             dialog_button_ok.classList.add('dialog_button');
             dialog_button_ok.classList.add('confirm');
             dialog_button_ok.appendChild(document.createTextNode('ok'));
-            dialog_button_ok.addEventListener('click',function(){_callback(input.field.value); background_show(false); document.body.removeChild(dialog_frame);},false);
+            dialog_button_ok.addEventListener('click',function(){if(typecheck(_type, input.field.value)){_callback(input.field.value); background_show(false); document.body.removeChild(dialog_frame);}},false);
             dialog_buttons.appendChild(dialog_button_ok);
-
+/*
             var dialog_button_cancel = document.createElement('button');
             dialog_button_cancel.classList.add('dialog_button');
             dialog_button_cancel.classList.add('close');
             dialog_button_cancel.appendChild(document.createTextNode('cancel'));
             dialog_button_cancel.addEventListener('click',function(){background_show(false); document.body.removeChild(dialog_frame)},false);
             dialog_buttons.appendChild(dialog_button_cancel);
-
+*/
             dialog_frame.appendChild(dialog_buttons);
         };
 
@@ -1296,8 +1339,12 @@ var WikiGame = function()
 	var setup = function()
 	{
 //        start_domvas();
-		attach_css("PAT_wikigame/wikigame.css");
-		attach_wikiframe(document.body,'wiki-schools/');
+        for(var i = 0; i < settings.css_files.length; ++i)
+        {
+            attach_css(settings.css_files[i]);
+        }
+
+		attach_wikiframe(document.body, settings.default_page);
         Helper();
 		Buttstrap();
 		Game_Controller();
@@ -1310,7 +1357,7 @@ var WikiGame = function()
 		Message_Handler();
         Tutorial_Controller();
 
-		Server_Connector("ws://127.0.0.1:8888/wikigame");
+		Server_Connector(settings.websocket_url);
 //        Server_Connector("ws://129.27.12.44:8888/wikigame");
 		Event_Controller();
 
