@@ -20,6 +20,30 @@ var WikiGame = function()
 	var buttstrap;
     var helper;
 	var client_id;
+    var debug;
+
+    var Debug = function()
+    {
+        this.debug_reset = function()
+        {
+            server_connector.send_message('DEBUG_RESET', null, false);
+            game_controller.reset();
+        };
+
+
+
+        var reset_frame = helper.create_object('div', ['debug_frame', 'close']);
+
+        var reset_text = helper.create_object('div', ['abort_text']);
+
+        reset_text.appendChild(document.createTextNode("DEBUG RESET"));
+        reset_text.addEventListener('click', function(){debug.debug_reset();}, false);
+        reset_frame.appendChild(reset_text);
+
+        document.body.appendChild(reset_frame);
+
+        debug = this;
+    };
 
     var Helper = function()
     {
@@ -67,9 +91,8 @@ var WikiGame = function()
 
         this.reset = function()
         {
+            dialog_controller.text_dialog("Resetting", 'The system will now reset!', function(){localStorage.clear(); location.reload(true);})
 
-            dialog_controller.text_dialog("DONE", 'The system will now reset!', game_controller.start);
-            localStorage.clear();
         };
 
         this.reset_menu = function()
@@ -582,7 +605,7 @@ var WikiGame = function()
             input_tooltip.appendChild(document.createTextNode("(bad)"));
 
             var input_tooltip_right = document.createElement('span');
-            input_tooltip_right.style = "position:absolute; right: 0; top:0, text-align:right;";
+            input_tooltip_right.style = "position:absolute; right: 0; top:0; text-align:right;";
             input_tooltip_right.appendChild(document.createTextNode("😀"));
             input_tooltip_right.appendChild(document.createElement('br'));
             input_tooltip_right.appendChild(document.createTextNode("(good)"));
@@ -934,6 +957,14 @@ var WikiGame = function()
             tutorial_closer.addEventListener('click', function(){tutorial_controller.close_tutorial_frame(name)}, false);
             tutorial_frame.appendChild(tutorial_closer);
 
+            var tutorial_buttons = helper.create_object('div', ['dialog_buttons']);
+
+            var tutorial_ok = helper.create_object('button', ['dialog_button', 'confirm']);
+            tutorial_ok.addEventListener('click', function(){tutorial_controller.close_tutorial_frame(name)}, false);
+            tutorial_ok.appendChild(document.createTextNode("OK"));
+
+            tutorial_buttons.appendChild(tutorial_ok);
+            tutorial_frame.appendChild(tutorial_buttons);
 
             document.body.appendChild(tutorial_frame);
             tutorial_frames.push({name: name, frame: tutorial_frame});
@@ -1100,6 +1131,11 @@ var WikiGame = function()
                 case "tutorial":
                 {
                     tutorial_controller.show_tutorial_frame(message_package.message);
+                    break;
+                }
+                case "dialog":
+                {
+                    dialog_controller.text_dialog(message_package.message.title, message_package.message.text, null);
                     break;
                 }
 
@@ -1356,6 +1392,7 @@ var WikiGame = function()
         Dialog_Controller();
 		Message_Handler();
         Tutorial_Controller();
+        Debug();
 
 		Server_Connector(settings.websocket_url);
 //        Server_Connector("ws://129.27.12.44:8888/wikigame");

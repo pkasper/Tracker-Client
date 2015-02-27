@@ -622,3 +622,17 @@ div.notification_message_core
 	100%{opacity:0;width:0;}
 }
 
+/*					DEBUG					*/
+
+div.debug_frame
+{
+    position: absolute;
+    right: 0.2rem;
+    bottom: 0.2rem;
+    width: 10rem;
+    border: 1px solid #212121;
+    box-shadow: 0 0 4px #212121;
+    overflow: hidden;
+    height: 1.5rem;
+    box-sizing: border-box;
+}
