@@ -89,6 +89,18 @@ var WikiGame = function()
         var viewport = {size:{x:0,y:0}, scroll:{x:0,y:0}, scrollsize:{x:0, y:0}};
         var keys = [];
 
+        var block_broadcast = false;
+
+        this.block = function(_state)
+        {
+            block_broadcast = _state;
+        };
+
+        this.get_block_state = function()
+        {
+            return block_broadcast;
+        };
+
         this.reset = function()
         {
             dialog_controller.text_dialog("Resetting", 'The system will now reset!', function(){localStorage.clear(); location.reload(true);})
@@ -113,6 +125,7 @@ var WikiGame = function()
 
         this.set_game = function(_game_data)
         {
+            game_controller.block(true);
             game_info.game_id = _game_data.game_name;
             game_status.game_id = _game_data.game_name;
             game_info.game_name = _game_data.game_name;
@@ -304,10 +317,10 @@ var WikiGame = function()
         {
             if(!_silent)
             {
-                var confirmed = dialog_controller.confirm_dialog("Are you sure?", "Do you really want to abort the mission?", function(_response){if(_response){server_connector.send_message("abort", null, false);}})
+                var confirmed = dialog_controller.confirm_dialog("Are you sure?", "Do you really want to abort the mission?", function(_response){if(_response){server_connector.send_message("abort", null, true);}});
                 return;
             }
-            server_connector.send_message("abort", null, false);
+            server_connector.send_message("abort", null, true);
         };
 
 		game_controller = this;
@@ -1429,6 +1442,7 @@ var WikiGame = function()
 		{
 			case "load":
 			{
+                game_controller.block(false);
 				broadcast = true;
 				event_controller.attach_events();
                 game_controller.reset_menu();
@@ -1513,7 +1527,14 @@ var WikiGame = function()
 
 		if(broadcast)
 		{
-			server_connector.send_message("event",_event.type,true);
+            if(game_controller.get_block_state())
+            {
+                console.log("BLOCKED BROADCAST: " + _event.type)
+            }
+            else
+            {
+                server_connector.send_message("event", _event.type, true);
+            }
 		}
 	};
 	setup();
