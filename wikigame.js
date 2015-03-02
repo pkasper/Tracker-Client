@@ -1153,6 +1153,7 @@ var WikiGame = function()
                 }
                 case "session_complete":
                 {
+                    game_controller.block(true);
                     dialog_controller.text_dialog('Session Completed', "Thank you for participating", function(){game_controller.reset()});
                     break;
                 }
@@ -1173,6 +1174,8 @@ var WikiGame = function()
 		var socket = null;
 		var server_address = _address;
 
+        var crashed = false;
+
 		var construct_message = function(_type,_message,_attach_features)
 		{
 			var message = {};
@@ -1190,9 +1193,9 @@ var WikiGame = function()
 		{
 			socket = new WebSocket(server_address);
 
-			socket.addEventListener('message',function(){return function(evt){message_handler.handle_message(evt.data);}}());
-			socket.addEventListener('open',function(){flush_queue(); notification_controller.notify("emphasis","Server connection established!");},false);
-			socket.addEventListener('close',function(){socket = null; setTimeout(create_socket, 5000); notification_controller.notify("error","Server connection terminated!");},false);
+			socket.addEventListener('message',function(){return function(_event){message_handler.handle_message(_event.data);}}());
+			socket.addEventListener('open',function(){if(crashed){game_controller.start()}; flush_queue(); notification_controller.notify("emphasis","Server connection established!");},false);
+			socket.addEventListener('close',function(){crashed = true; socket = null; setTimeout(create_socket, 5000); notification_controller.notify("error","Server connection terminated!");},false);
 		};
 
 		this.send_message = function(_type,_message,_attach_features)
