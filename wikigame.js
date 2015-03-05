@@ -1206,9 +1206,17 @@ var WikiGame = function()
 
         var flush_queue = function()
         {
-            while(message_queue.length != 0)
+            if((socket == null) || socket.readyState != 1)
             {
-                socket.send(message_queue.shift());
+                notification_controller.notify('error', "Invalid socket state! Waiting for 'ready'...");
+                setTimeout(flush_queue, 3);
+            }
+            else
+            {
+                while (message_queue.length != 0)
+                {
+                    socket.send(message_queue.shift());
+                }
             }
         };
 		create_socket();
