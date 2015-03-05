@@ -1217,7 +1217,7 @@ var WikiGame = function()
             if(socket.readyState != 1)
             {
                 notification_controller.notify('error', "Invalid socket state! Waiting for 'ready'...");
-                setTimeout(flush_queue, 3);
+                setTimeout(flush_queue, 3000);
             }
             else
             {
