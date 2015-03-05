@@ -1194,7 +1194,7 @@ var WikiGame = function()
 			socket = new WebSocket(server_address);
 
 			socket.addEventListener('message',function(){return function(_event){message_handler.handle_message(_event.data);}}());
-			socket.addEventListener('open',function(){if(crashed){game_controller.start()}; flush_queue(); notification_controller.notify("emphasis","Server connection established!");},false);
+			socket.addEventListener('open',function(){if(crashed){game_controller.start()} flush_queue(); notification_controller.notify("emphasis","Server connection established!");},false);
 			socket.addEventListener('close',function(){crashed = true; socket = null; setTimeout(create_socket, 5000); notification_controller.notify("error","Server connection terminated!");},false);
 		};
 
@@ -1206,7 +1206,15 @@ var WikiGame = function()
 
         var flush_queue = function()
         {
-            if((socket == null) || socket.readyState != 1)
+            if(socket == null)
+            {
+                console.log("Trying to flush with socket state: NULL");
+                notification_controller.notify('error', "SOCKET IS NULL!...");
+                return;
+            }
+
+            console.log("Trying to flush with socket state: " + socket.readyState);
+            if(socket.readyState != 1)
             {
                 notification_controller.notify('error', "Invalid socket state! Waiting for 'ready'...");
                 setTimeout(flush_queue, 3);
