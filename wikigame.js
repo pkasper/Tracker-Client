@@ -1219,7 +1219,6 @@ var WikiGame = function()
             if(socket == null)
             {
                 console.log("Trying to flush with socket state: NULL");
-                notification_controller.notify('error', "SOCKET IS NULL!...");
                 return;
             }
 
