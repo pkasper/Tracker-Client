@@ -618,23 +618,19 @@ var WikiGame = function()
 
         var dialog_input_range = function(_from, _to)
         {
-            var input_frame = document.createElement('div');
-            input_frame.classList.add("dialog_content");
-            var input_tooltip = document.createElement('div');
-            input_tooltip.classList.add('dialog_tooltip');
-            input_tooltip.classList.add('dialog_tooltip_range');
-            input_tooltip.appendChild(document.createTextNode("😕"));
+            var input_frame = helper.create_object('div', ['dialog_content']);
+            var input_tooltip = helper.create_object('div', ['dialog_tooltip', 'dialog_tooltip_range']); document.createElement('div');
+            input_tooltip.appendChild(document.createTextNode("👎"));
             input_tooltip.appendChild(document.createElement('br'));
             input_tooltip.appendChild(document.createTextNode("(bad)"));
 
-            var input_tooltip_right = document.createElement('span');
-            input_tooltip_right.style = "position:absolute; right: 0; top:0; text-align:right;";
-            input_tooltip_right.appendChild(document.createTextNode("😀"));
+            var input_tooltip_right = helper.create_object('div', ['dialog_tooltip_range_hover_right']);
+            input_tooltip_right.appendChild(document.createTextNode("👍"));
             input_tooltip_right.appendChild(document.createElement('br'));
             input_tooltip_right.appendChild(document.createTextNode("(good)"));
             input_tooltip.appendChild(input_tooltip_right);
             input_frame.appendChild(input_tooltip);
-            var input_field = document.createElement('input');
+            var input_field = helper.create_object('input', ['dialog_input'])
             input_field.classList.add("dialog_input");
             input_field.type = "range";
             input_field.min = _from;
@@ -1109,6 +1105,7 @@ var WikiGame = function()
                     var session_id = false;
                     if (localStorage.getItem("session_id") !== null)
                     {
+                        console.log("Found Session!");
                         session_id = localStorage.getItem("session_id");
                     }
                     server_connector.send_message("session_response", session_id, false);

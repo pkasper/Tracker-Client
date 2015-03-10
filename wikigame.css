@@ -216,6 +216,14 @@ div.dialog_tooltip_range
     margin: 0;
 }
 
+div.dialog_tooltip_range_hover_right
+{
+    position:absolute;
+    right: 0;
+    top:0;
+    text-align:right;
+}
+
 div.dialog_buttons
 {
     position: relative;
