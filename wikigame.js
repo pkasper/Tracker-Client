@@ -98,12 +98,9 @@ var WikiGame = function()
             {
                 document.body.removeChild(abort_button);
             }
-            var abort_frame = document.createElement('div');
-            abort_frame.classList.add('abort_frame');
-            abort_frame.classList.add("close");
+            var abort_frame = helper.create_object('div', ['abort_frame', 'close']);
 
-            var abort_text = document.createElement('div');
-            abort_text.classList.add('abort_text');
+            var abort_text = helper.create_object('div', ['abort_text']);
             abort_text.appendChild(document.createTextNode("Abort Task"));
             abort_text.addEventListener('click', function(){game_controller.abort_game(false);}, false);
             abort_frame.appendChild(abort_text);
@@ -162,21 +159,18 @@ var WikiGame = function()
             wikiframe.contentWindow.location.href = game_info.start_page.url;
 
             // BUTTSTRAP STUFF
-            var buttstrap_content = document.createElement('div');
-            var start_link = document.createElement('a');
+            var buttstrap_content = helper.create_object('div');
+            var start_link = helper.create_object('a');
             start_link.href = _game_data.start_page.url;
             start_link.target = '_blank';
             start_link.appendChild(document.createTextNode(_game_data.start_page.name));
-            var goal_link = document.createElement('a');
+            var goal_link = helper.create_object('a');
             goal_link.href = _game_data.goal_page.url;
             goal_link.target = '_blank';
             goal_link.appendChild(document.createTextNode(_game_data.goal_page.name));
 
-            var buttstrap_arrow_container = document.createElement('div');
-            buttstrap_arrow_container.classList.add('buttstrap_arrow_container');
-            var buttstrap_arrow_start = document.createElement('div');
-            buttstrap_arrow_start.classList.add('buttstrap_arrow');
-            buttstrap_arrow_start.classList.add('buttstrap_arrow_post');
+            var buttstrap_arrow_container = helper.create_object('div', ['buttstrap_arrow_container']);
+            var buttstrap_arrow_start = helper.create_object('div', ['buttstrap_arrow', 'buttstrap_arrow_post']);
             buttstrap_arrow_start.appendChild(start_link);
             buttstrap_arrow_start.style.backgroundColor = 'rgba(200, 0, 0, 1)';
             buttstrap_arrow_start.style.zIndex = game_info.distance;
@@ -185,9 +179,7 @@ var WikiGame = function()
 
             for(var i = 1; i < game_info.distance; ++i)
             {
-                var buttstrap_arrow_mid = document.createElement('div');
-                buttstrap_arrow_mid.classList.add('buttstrap_arrow');
-                buttstrap_arrow_mid.classList.add('buttstrap_arrow_post');
+                var buttstrap_arrow_mid = helper.create_object('div', ['buttstrap_arrow', 'buttstrap_arrow_post']);
                 var color_split = game_info.distance / 2;
                 var red_part = Math.round((2 * Math.min(game_info.distance  - i, color_split) / game_info.distance)  * 200);
                 var blue_part = Math.round((2 * Math.min(i, color_split) / game_info.distance)  * 200);
@@ -197,8 +189,7 @@ var WikiGame = function()
                 buttstrap_arrow_container.appendChild(buttstrap_arrow_mid);
             }
 
-            var buttstrap_arrow_goal = document.createElement('div');
-            buttstrap_arrow_goal.classList.add('buttstrap_arrow');
+            var buttstrap_arrow_goal = helper.create_object('div', ['buttstrap_arrow']);
             buttstrap_arrow_goal.appendChild(goal_link);
             buttstrap_arrow_goal.style.backgroundColor = 'rgba(0, 200, 0, 1)';
             buttstrap_arrow_goal.style.textAlign = 'right';
@@ -370,7 +361,7 @@ var WikiGame = function()
                 thumb = true;
             }
 
-            var target_clone = document.createElement('div');
+            var target_clone = helper.create_object('div');
             var target_range = document.createRange();
             target_range.setStart(start_object, 0);
             target_range.setEndBefore(_object);
@@ -556,8 +547,7 @@ var WikiGame = function()
 
     var Dialog_Controller = function()
     {
-        var dialog_background = document.createElement('div');
-        dialog_background.classList.add('dialog_background');
+        var dialog_background = helper.create_object('div', ['dialog_background']);
         document.body.appendChild(dialog_background);
 
         var background_show = function(_state)
@@ -574,10 +564,8 @@ var WikiGame = function()
 
         var dialog_input_string = function()
         {
-            var input_frame = document.createElement('div');
-            input_frame.classList.add("dialog_content");
-            var input_field = document.createElement('input');
-            input_field.classList.add("dialog_input");
+            var input_frame = helper.create_object('div', ['dialog_content']);
+            var input_field = helper.create_object('input', ['dialog_input']);
             input_field.type = "text";
             input_frame.appendChild(input_field);
             return {frame:input_frame, field:input_field};
@@ -585,10 +573,8 @@ var WikiGame = function()
 
         var dialog_input_int = function()
         {
-            var input_frame = document.createElement('div');
-            input_frame.classList.add("dialog_content");
-            var input_field = document.createElement('input');
-            input_field.classList.add("dialog_input");
+            var input_frame = helper.create_object('div', ['dialog_content']);
+            var input_field = helper.create_object('input', ['dialog_input']);
             input_field.type = "number";
             input_field.value = 0;
             input_frame.appendChild(input_field);
@@ -597,17 +583,15 @@ var WikiGame = function()
 
         var dialog_input_bool = function()
         {
-            var input_frame = document.createElement('div');
-            input_frame.classList.add("dialog_content");
-            var input_field = document.createElement('select');
-            input_field.classList.add("dialog_input");
+            var input_frame = helper.create_object('div', ['dialog_content']);
+            var input_field = helper.create_object('select', ['dialog_input']);
 
-            var option_true = document.createElement('option');
+            var option_true = helper.create_object('option');
             option_true.appendChild(document.createTextNode('Yes'));
             option_true.value = 1;
             input_field.appendChild(option_true);
 
-            var option_false = document.createElement('option');
+            var option_false = helper.create_object('option');
             option_false.appendChild(document.createTextNode('No'));
             option_false.value = 0;
             input_field.appendChild(option_false);
@@ -619,18 +603,18 @@ var WikiGame = function()
         var dialog_input_range = function(_from, _to)
         {
             var input_frame = helper.create_object('div', ['dialog_content']);
-            var input_tooltip = helper.create_object('div', ['dialog_tooltip', 'dialog_tooltip_range']); document.createElement('div');
+            var input_tooltip = helper.create_object('div', ['dialog_tooltip', 'dialog_tooltip_range']);
             input_tooltip.appendChild(document.createTextNode("👎"));
-            input_tooltip.appendChild(document.createElement('br'));
+            input_tooltip.appendChild(helper.create_object('br'));
             input_tooltip.appendChild(document.createTextNode("(bad)"));
 
             var input_tooltip_right = helper.create_object('div', ['dialog_tooltip_range_hover_right']);
             input_tooltip_right.appendChild(document.createTextNode("👍"));
-            input_tooltip_right.appendChild(document.createElement('br'));
+            input_tooltip_right.appendChild(helper.create_object('br'));
             input_tooltip_right.appendChild(document.createTextNode("(good)"));
             input_tooltip.appendChild(input_tooltip_right);
             input_frame.appendChild(input_tooltip);
-            var input_field = helper.create_object('input', ['dialog_input'])
+            var input_field = helper.create_object('input', ['dialog_input']);
             input_field.classList.add("dialog_input");
             input_field.type = "range";
             input_field.min = _from;
@@ -685,12 +669,10 @@ var WikiGame = function()
         this.dialog = function(_text, _type, _payload, _callback)
         {
             background_show(true);
-            var dialog_frame = document.createElement('div');
-            dialog_frame.classList.add('dialog_frame');
+            var dialog_frame = document.helper.create_object('div', ['dialog_frame']);
             document.body.appendChild(dialog_frame);
 
-            var dialog_label = document.createElement('div');
-            dialog_label.classList.add('dialog_label');
+            var dialog_label = helper.create_object('div', ['dialog_label']);
             dialog_label.appendChild(document.createTextNode(_text));
             dialog_frame.appendChild(dialog_label);
 
@@ -726,19 +708,14 @@ var WikiGame = function()
 
             dialog_frame.appendChild(input.frame);
 
-            var dialog_buttons = document.createElement('div');
-            dialog_buttons.classList.add('dialog_buttons');
+            var dialog_buttons = helper.create_object('div', ['dialog_buttons']);
 
-            var dialog_button_ok = document.createElement('button');
-            dialog_button_ok.classList.add('dialog_button');
-            dialog_button_ok.classList.add('confirm');
+            var dialog_button_ok = helper.create_object('button', ['dialog_button', 'confirm']);
             dialog_button_ok.appendChild(document.createTextNode('ok'));
             dialog_button_ok.addEventListener('click',function(){if(typecheck(_type, input.field.value)){_callback(input.field.value); background_show(false); document.body.removeChild(dialog_frame);}},false);
             dialog_buttons.appendChild(dialog_button_ok);
 /*
-            var dialog_button_cancel = document.createElement('button');
-            dialog_button_cancel.classList.add('dialog_button');
-            dialog_button_cancel.classList.add('close');
+            var dialog_button_cancel = helper.create_object('button', ['dialog_button', 'close']);
             dialog_button_cancel.appendChild(document.createTextNode('cancel'));
             dialog_button_cancel.addEventListener('click',function(){background_show(false); document.body.removeChild(dialog_frame)},false);
             dialog_buttons.appendChild(dialog_button_cancel);
@@ -749,30 +726,24 @@ var WikiGame = function()
         this.text_dialog = function(_title, _text, _callback)
         {
             background_show(true);
-            var dialog_frame = document.createElement('div');
-            dialog_frame.classList.add('dialog_frame');
+            var dialog_frame = helper.create_object('div', ['dialog_frame']);
             document.body.appendChild(dialog_frame);
 
-            var dialog_label = document.createElement('div');
-            dialog_label.classList.add('dialog_label');
+            var dialog_label = helper.create_object('div', ['dialog_label']);
             dialog_label.appendChild(document.createTextNode(_title));
             dialog_frame.appendChild(dialog_label);
 
-            var input_frame = document.createElement('div');
-            input_frame.classList.add("dialog_content");
+            var input_frame = helper.create_object('div', ['dialog_content']);
 
-            var text_content = document.createElement('div');
-            text_content.classList.add('dialog_text');
+            var text_content = helper.create_object('div', ['dialog_text']);
             text_content.innerHTML = _text;
             input_frame.appendChild(text_content);
             dialog_frame.appendChild(input_frame);
 
-            var dialog_buttons = document.createElement('div');
-            dialog_buttons.classList.add('dialog_buttons');
+            var dialog_buttons = helper.create_object('div', ['dialog_buttons']);
+            dialog_buttons.classList.add('');
 
-            var dialog_button_ok = document.createElement('button');
-            dialog_button_ok.classList.add('dialog_button');
-            dialog_button_ok.classList.add('confirm');
+            var dialog_button_ok = helper.create_object('button', ['dialog_button', 'confirm']);
             dialog_button_ok.appendChild(document.createTextNode('ok'));
             dialog_button_ok.addEventListener('click',function(){if(_callback){_callback()} background_show(false); document.body.removeChild(dialog_frame);},false);
             dialog_buttons.appendChild(dialog_button_ok);
@@ -784,37 +755,29 @@ var WikiGame = function()
         this.confirm_dialog = function(_title, _text, _callback)
         {
             background_show(true);
-            var dialog_frame = document.createElement('div');
-            dialog_frame.classList.add('dialog_frame');
+            var dialog_frame = helper.create_object('div', ['dialog_frame']);
             document.body.appendChild(dialog_frame);
 
-            var dialog_label = document.createElement('div');
-            dialog_label.classList.add('dialog_label');
+            var dialog_label = helper.create_object('div', ['dialog_label']);
             dialog_label.appendChild(document.createTextNode(_title));
             dialog_frame.appendChild(dialog_label);
 
-            var input_frame = document.createElement('div');
-            input_frame.classList.add("dialog_content");
+            var input_frame = helper.create_object('div', ['dialog_content']);
 
-            var text_content = document.createElement('div');
-            text_content.classList.add('dialog_text');
+            var text_content = helper.create_object('div', ['dialog_text']);
             text_content.innerHTML = _text;
             input_frame.appendChild(text_content);
             dialog_frame.appendChild(input_frame);
 
-            var dialog_buttons = document.createElement('div');
-            dialog_buttons.classList.add('dialog_buttons');
+            var dialog_buttons = helper.create_object('div', ['dialog_buttons']);
+            dialog_buttons.classList.add('');
 
-            var dialog_button_yes = document.createElement('button');
-            dialog_button_yes.classList.add('dialog_button');
-            dialog_button_yes.classList.add('confirm');
+            var dialog_button_yes = helper.create_object('button', ['dialog_button', 'confirm']);
             dialog_button_yes.appendChild(document.createTextNode('yes'));
             dialog_button_yes.addEventListener('click',function(){_callback(true); background_show(false); document.body.removeChild(dialog_frame);},false);
             dialog_buttons.appendChild(dialog_button_yes);
 
-            var dialog_button_no = document.createElement('button');
-            dialog_button_no.classList.add('dialog_button');
-            dialog_button_no.classList.add('close');
+            var dialog_button_no = helper.create_object('button', ['dialog_button', 'close']);
             dialog_button_no.appendChild(document.createTextNode('no'));
             dialog_button_no.addEventListener('click',function(){_callback(false); background_show(false); document.body.removeChild(dialog_frame);},false);
             dialog_buttons.appendChild(dialog_button_no);
@@ -828,25 +791,18 @@ var WikiGame = function()
 
     var Hint_Controller = function()
     {
-        var hints_frame = document.createElement('div');
-        hints_frame.classList.add('hints_frame');
-        hints_frame.classList.add('hints_frame');
+        var hints_frame = helper.create_object('div', ['hints_frame']);
         document.body.appendChild(hints_frame);
 
         this.display_hint = function(_type, _text, _link)
         {
-            var hint_frame = document.createElement('div');
-            hint_frame.classList.add('hint_frame');
-            hint_frame.classList.add(_type);
+            var hint_frame = helper.create_object('div', ['hint_frame', _type]);
 
-            var hint_text = document.createElement('div');
-            hint_text.classList.add('hint_text');
+            var hint_text = helper.create_object('div', ['hint_text']);
             hint_text.appendChild(document.createTextNode(_text));
             hint_text.addEventListener('click', function(){hint_follow(_link, hint_frame);}, false);
 
-            var hint_close = document.createElement('div');
-            hint_close.classList.add('hint_close');
-            hint_close.classList.add('close');
+            var hint_close = helper.create_object('div', ['hint_close', 'close']);
             hint_close.appendChild(document.createTextNode('×'));
             hint_close.addEventListener('click', function(){hint_remove(hint_frame);}, false);
 
@@ -1022,14 +978,11 @@ var WikiGame = function()
 
 		var notification = function(_type,_inner_html)
 		{
-			this.node = document.createElement('div');
-			this.node.classList.add('notification');
-			this.node.classList.add(_type);
+			this.node = helper.create_object('div', ['notification', _type]);
 
-			var inner_core = document.createElement('div');
+			var inner_core = helper.create_object('div', ['notification_message_core']);
 			inner_core.addEventListener('mouseover',function(){return function(evt){evt.target.parentNode.style.animationPlayState="paused"}}());
 			inner_core.addEventListener('mouseout',function(){return function(evt){evt.target.parentNode.style.animationPlayState="running"}}());
-			inner_core.classList.add('notification_message_core');
 			inner_core.innerHTML = _inner_html;
 			this.node.appendChild(inner_core);
 
@@ -1049,8 +1002,7 @@ var WikiGame = function()
 
             setTimeout(function(){notification_frame.removeChild(new_notification.node);},6000); };
 
-		notification_frame = document.createElement('div');
-		notification_frame.classList.add('notification_frame');
+		notification_frame = helper.create_object('div', ['notification_frame']);
 		document.body.appendChild(notification_frame);
 
 		notification_controller = this;
@@ -1245,8 +1197,7 @@ var WikiGame = function()
 		}
 
 		//attach frame
-		var frame = document.createElement('iframe');
-		frame.classList.add('wikiframe');
+		var frame = helper.create_object('iframe', ['wikiframe']);
 		frame.src = _start_page;
 		_parent.appendChild(frame);
 		wikiframe = frame;
@@ -1254,7 +1205,7 @@ var WikiGame = function()
 
 	var attach_css = function(_path)
 	{
-		var wikigame_css = document.createElement('link');
+		var wikigame_css = helper.create_object('link');
 		wikigame_css.rel = "Stylesheet";
 		wikigame_css.href = _path;
 		document.head.appendChild(wikigame_css);
@@ -1356,17 +1307,14 @@ var WikiGame = function()
 
 		var attach = function()
 		{
-            frame = document.createElement('div');
-            frame.classList.add('buttstrap');
+            frame = helper.create_object('div', ['buttstrap']);
 
-			label = document.createElement('div');
-			label.classList.add('buttstrap_label');
+			label = helper.create_object('div', ['buttstrap_label']);
 			label.appendChild(document.createTextNode("▼"));
 			label.addEventListener('click',function(){buttstrap.toggle()},false);
             frame.appendChild(label);
 
-            content = document.createElement('div');
-            content.classList.add('buttstrap_content');
+            content = helper.create_object('div', ['buttstrap_content']);
             frame.appendChild(content);
 
 			document.body.appendChild(frame);
@@ -1380,7 +1328,7 @@ var WikiGame = function()
     {
         var mouse_position = game_controller.get_mouse().position;
 /*
-        var canvas = document.createElement('canvas');
+        var canvas = helper.create_object('canvas');
         canvas.width = wikiframe.offsetWidth;
         canvas.height = wikiframe.offsetHeight;
 
