@@ -615,7 +615,6 @@ var WikiGame = function()
             input_tooltip.appendChild(input_tooltip_right);
             input_frame.appendChild(input_tooltip);
             var input_field = helper.create_object('input', ['dialog_input']);
-            input_field.classList.add("dialog_input");
             input_field.type = "range";
             input_field.min = _from;
             input_field.max = _to;
@@ -669,7 +668,7 @@ var WikiGame = function()
         this.dialog = function(_text, _type, _payload, _callback)
         {
             background_show(true);
-            var dialog_frame = document.helper.create_object('div', ['dialog_frame']);
+            var dialog_frame = helper.create_object('div', ['dialog_frame']);
             document.body.appendChild(dialog_frame);
 
             var dialog_label = helper.create_object('div', ['dialog_label']);
@@ -739,9 +738,7 @@ var WikiGame = function()
             text_content.innerHTML = _text;
             input_frame.appendChild(text_content);
             dialog_frame.appendChild(input_frame);
-
             var dialog_buttons = helper.create_object('div', ['dialog_buttons']);
-            dialog_buttons.classList.add('');
 
             var dialog_button_ok = helper.create_object('button', ['dialog_button', 'confirm']);
             dialog_button_ok.appendChild(document.createTextNode('ok'));
@@ -770,7 +767,6 @@ var WikiGame = function()
             dialog_frame.appendChild(input_frame);
 
             var dialog_buttons = helper.create_object('div', ['dialog_buttons']);
-            dialog_buttons.classList.add('');
 
             var dialog_button_yes = helper.create_object('button', ['dialog_button', 'confirm']);
             dialog_button_yes.appendChild(document.createTextNode('yes'));
@@ -1365,13 +1361,12 @@ var WikiGame = function()
 	var setup = function()
 	{
 //        start_domvas();
-        for(var i = 0; i < settings.css_files.length; ++i)
-        {
-            attach_css(settings.css_files[i]);
-        }
+
+
+        Helper();
+
 
 		attach_wikiframe(document.body, settings.default_page);
-        Helper();
 		Buttstrap();
 		Game_Controller();
         Analyzer();
@@ -1384,6 +1379,10 @@ var WikiGame = function()
         Tutorial_Controller();
         Debug();
 
+        for(var i = 0; i < settings.css_files.length; ++i)
+        {
+            attach_css(settings.css_files[i]);
+        }
 		Server_Connector(settings.websocket_url);
 //        Server_Connector("ws://129.27.12.44:8888/wikigame");
 		Event_Controller();
