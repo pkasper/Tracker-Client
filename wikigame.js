@@ -355,7 +355,23 @@ var WikiGame = function()
 
                 return _array;
             }
-            var start_object = wikiframe.contentWindow.document.getElementById("mw-content-text").getElementsByTagName('p')[0];
+
+            var content_window = (wikiframe.contentWindow || wikiframe.contentDocument);
+            var content_document = content_window;
+            if(content_window.document)
+            {
+                content_document = content_document.document;
+            }
+
+            var start_object = null;
+            try
+            {
+                var start_object = content_document.getElementById("mw-content-text").getElementsByTagName('p')[0];
+            }
+            catch(_error)
+            {
+                return {thumb: thumb, offset: -1, link_nr: -1};
+            }
             var thumb = false;
             //----------- CASE thumbnail
             if(_object.parentNode.classList.contains('thumbcaption'))
@@ -376,7 +392,7 @@ var WikiGame = function()
             count_split = clean_list(count_split);
 
             var link_nr = 0;
-            var links = wikiframe.contentWindow.document.getElementsByTagName('a');
+            var links = content_document.getElementsByTagName('a');
             for(var i = 0; i < links.length; ++i)
             {
                 if(links[i] === _object)
@@ -387,7 +403,7 @@ var WikiGame = function()
             }
 
 
-            return {thumb: thumb, offset: count_split.length, link_nr:link_nr};
+            return {thumb: thumb, offset: count_split.length, link_nr: link_nr};
         };
 
         analyzer = this;
