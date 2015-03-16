@@ -519,26 +519,37 @@ var WikiGame = function()
 	{
 		var setup = function()
 		{
-			wikiframe.addEventListener('load', this, false);
-			window.addEventListener("resize", this, false);
-            wikiframe.addEventListener('scroll', this, false);
-            wikiframe.contentWindow.addEventListener('readystatechange', this, false);
+            console.log("Setting up events....");
+			wikiframe.addEventListener('load', wikigame, false);
+			window.addEventListener("resize", wikigame, false);
+            wikiframe.addEventListener('scroll', wikigame, false);
+            console.log("DONE!");
+            // IE TRYOUT
+ //           alert(wikiframe);
+ //           wikiframe.onload =  function(){wikigame.handleEvent(event);};
 		};
 
 		this.attach_events = function()
 		{
-			wikiframe.contentWindow.document.addEventListener('click', wikigame, false);
-			wikiframe.contentWindow.document.addEventListener('mousemove', wikigame, false);
-			wikiframe.contentWindow.document.addEventListener('mousedown', wikigame, false);
-			wikiframe.contentWindow.document.addEventListener('mouseup', wikigame, false);
-			wikiframe.contentWindow.document.addEventListener('mousemove', wikigame, false);
-			wikiframe.contentWindow.document.addEventListener('dblclick', wikigame, false);
-			wikiframe.contentWindow.document.addEventListener("scroll", wikigame, false);
-            wikiframe.contentWindow.document.addEventListener("keypress", wikigame, false);
-            wikiframe.contentWindow.document.addEventListener("keyup", wikigame, false);
-            wikiframe.contentWindow.document.addEventListener("keydown", wikigame, false);
+            var content_window = (wikiframe.contentWindow || wikiframe.contentDocument);
+            var content_document = content_window;
+            if(content_window.document)
+            {
+                content_document = content_document.document;
+            }
 
-			wikiframe.contentWindow.addEventListener("beforeunload", wikigame, false);
+            content_document.addEventListener('click', wikigame, false);
+            content_document.addEventListener('mousemove', wikigame, false);
+            content_document.addEventListener('mousedown', wikigame, false);
+            content_document.addEventListener('mouseup', wikigame, false);
+            content_document.addEventListener('mousemove', wikigame, false);
+            content_document.addEventListener('dblclick', wikigame, false);
+            content_document.addEventListener("scroll", wikigame, false);
+            content_document.addEventListener("keypress", wikigame, false);
+            content_document.addEventListener("keyup", wikigame, false);
+            content_document.addEventListener("keydown", wikigame, false);
+
+            content_window.addEventListener("beforeunload", wikigame, false);
 		};
 
 		setup();
@@ -1413,6 +1424,8 @@ var WikiGame = function()
 		{
 			case "load":
 			{
+                console.log("CAPTURED LOAD");
+
                 game_controller.block(false);
 				broadcast = true;
 				event_controller.attach_events();
