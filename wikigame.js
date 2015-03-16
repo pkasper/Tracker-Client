@@ -22,6 +22,9 @@ var WikiGame = function()
 	var client_id;
     var debug;
 
+    //WARNING: THIS IS DONE VIA BROWSER SNIFFING WHICH IS BAD!!!!
+    var IE_FALLBACK_MODE = false;
+
     var Debug = function()
     {
         this.debug_reset = function()
@@ -519,14 +522,17 @@ var WikiGame = function()
 	{
 		var setup = function()
 		{
-            console.log("Setting up events....");
+
 			wikiframe.addEventListener('load', wikigame, false);
 			window.addEventListener("resize", wikigame, false);
-            wikiframe.addEventListener('scroll', wikigame, false);
-            console.log("DONE!");
-            // IE TRYOUT
- //           alert(wikiframe);
- //           wikiframe.onload =  function(){wikigame.handleEvent(event);};
+
+            if(IE_FALLBACK_MODE)
+            {
+                console.log("Setting up events for IE....");
+                wikiframe.onload = wikigame.handleEvent;
+                wikiframe.onresize = wikigame.handleEvent;
+                console.log("DONE!");
+            }
 		};
 
 		this.attach_events = function()
@@ -550,6 +556,26 @@ var WikiGame = function()
             content_document.addEventListener("keydown", wikigame, false);
 
             content_window.addEventListener("beforeunload", wikigame, false);
+
+
+
+            if(IE_FALLBACK_MODE)
+            {
+                console.log("Attaching events for IE....");
+
+                content_document.onclick = wikigame.handleEvent;
+                content_document.onmousemove = wikigame.handleEvent;
+                content_document.onmousedown = wikigame.handleEvent;
+                content_document.onmouseup = wikigame.handleEvent;
+                content_document.ondblclick = wikigame.handleEvent;
+                content_document.onscroll = wikigame.handleEvent;
+                content_document.onkeypress = wikigame.handleEvent;
+                content_document.onkeyup = wikigame.handleEvent;
+                content_document.onkeydown = wikigame.handleEvent;
+                content_document.onbeforeunload = wikigame.handleEvent;
+
+                console.log("DONE!");
+            }
 		};
 
 		setup();
@@ -1371,12 +1397,12 @@ var WikiGame = function()
 
 	var setup = function()
 	{
+        if(document.documentMode)
+        {
+            IE_FALLBACK_MODE = true
+        }
 //        start_domvas();
-
-
         Helper();
-
-
 		attach_wikiframe(document.body, settings.default_page);
 		Buttstrap();
 		Game_Controller();
@@ -1398,7 +1424,14 @@ var WikiGame = function()
 //        Server_Connector("ws://129.27.12.44:8888/wikigame");
 		Event_Controller();
 
-        dialog_controller.text_dialog("Welcome", '[WELCOME] <br /> [INTRODUCTION TEXT] <br /> [DATA SECURITY STATEMENT]', game_controller.start);
+        if(IE_FALLBACK_MODE)
+        {
+            dialog_controller.text_dialog("WARNING", '<div style="outline: 10px #CC0000 solid;">You are running in IE fallback mode. <br /> If you are NOT using the Microsoft Internet Explorer please contact [email]</div>', function(){dialog_controller.text_dialog("Welcome", '[WELCOME] <br /> [INTRODUCTION TEXT] <br /> [DATA SECURITY STATEMENT]', game_controller.start);});
+        }
+        else
+        {
+            dialog_controller.text_dialog("Welcome", '[WELCOME] <br /> [INTRODUCTION TEXT] <br /> [DATA SECURITY STATEMENT] <br /> PLACEHOLDER <br /> PLACEHOLDER <br /> PLACEHOLDER <br /> PLACEHOLDER', game_controller.start);
+        }
 		//temporary start
 
         //temporary hint
